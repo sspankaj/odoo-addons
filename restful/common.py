@@ -1,6 +1,6 @@
 """Common methods"""
 import ast
-import json
+import simplejson as json
 import werkzeug.wrappers
 
 
@@ -35,14 +35,17 @@ def invalid_response(typ, message=None, status=400):
 def extract_arguments(payload, offset=0, limit=0, order=None):
     """."""
     fields, domain = [], []
+    data = payload.keys()
+    for payload in data:
+        payload = json.loads(payload)
     if payload.get('domain'):
-        domain += ast.literal_eval(payload.get('domain'))
+        domain += payload.get('domain')
     if payload.get('fields'):
-        fields += ast.literal_eval(payload.get('fields'))
+        fields += payload.get('fields')
     if payload.get('offset'):
         offset = int(payload['offset'])
     if payload.get('limit'):
-        limit = int(payload['limit'])
+        limit = int(payload.get('limit'))
     if payload.get('order'):
         order = payload.get('order')
     return [domain, fields, offset, limit, order]

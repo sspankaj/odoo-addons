@@ -26,4 +26,10 @@ For detailed example of REST API refer https://ajepe.github.io/restful-api-for-o
     'license': 'LGPL-3',
     'installable': True,
     'auto_install': False,
+    "external_dependencies": {
+        "python": [
+            'simplejson'
+        ], 
+        "bin": []
+    },
 }
