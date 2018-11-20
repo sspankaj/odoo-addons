@@ -1,11 +1,11 @@
 {
     'name': 'RESTFUL API For Odoo',
-    'version': '0.1.0',
+    'version': '0.2.0',
     'category': 'API',
-    'author': 'The InnerCircle',
+    'author': 'Babatope Ajepe',
     'website': 'https://ajepe.github.io/restful-api-for-odoo',
     'summary': 'RESTFUL API For Odoo',
-    'support': 'galagoapps@gmail.com',
+    'support': 'ajepebabatope@gmail.com',
     'description': """
 RESTFUL API For Odoo
 ====================
@@ -15,6 +15,7 @@ For detailed example of REST API refer https://ajepe.github.io/restful-api-for-o
 """,
     'depends': [
         'web',
+        'base',
     ],
     'data': [
         'data/ir_config_param.xml',

@@ -51,7 +51,6 @@ class APIController(http.Controller):
         if model:
             domain, fields, offset, limit, order = extract_arguments(
                 payload)
-            print('***************************', limit)
             data = request.env[model.model].sudo().search_read(
                 domain=domain, fields=fields, offset=offset, limit=limit, order=order)
             if data:

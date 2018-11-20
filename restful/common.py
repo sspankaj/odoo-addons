@@ -1,8 +1,9 @@
 """Common methods"""
 import ast
 import simplejson as json
+from simplejson.errors import JSONDecodeError
 import werkzeug.wrappers
-
+from odoo.http import request
 
 def valid_response(data, status=200):
     """Valid Response
@@ -32,14 +33,22 @@ def invalid_response(typ, message=None, status=400):
     )
 
 
-def extract_arguments(payload, offset=0, limit=0, order=None):
+def extract_arguments(payloads, offset=0, limit=0, order=None):
     """."""
-    fields, domain = [], []
-    data = payload.keys()
-    for payload in data:
-        payload = json.loads(payload)
+    fields, domain, payload = [], [], {}
+    data = str(payloads)[2:-2]
+    try:
+        payload = json.loads(data)
+    except JSONDecodeError as e:
+        pass
     if payload.get('domain'):
-        domain += payload.get('domain')
+        for _domain in payload.get('domain'):
+            l, o, r = _domain
+            if o == "': '":
+                o = '='
+            elif o == "!': '":
+                o = '!='
+            domain.append(tuple([l, o, r]))
     if payload.get('fields'):
         fields += payload.get('fields')
     if payload.get('offset'):
