@@ -53,6 +53,10 @@ class APIController(http.Controller):
                 payload)
             data = request.env[model.model].sudo().search_read(
                 domain=domain, fields=fields, offset=offset, limit=limit, order=order)
+            if id:
+                domain = [('id', '=', int(id))]
+                data = request.env[model.model].sudo().search_read(
+                domain=domain, fields=fields, offset=offset, limit=limit, order=order)
             if data:
                 return valid_response(data)
             else:
