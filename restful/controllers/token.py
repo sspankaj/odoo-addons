@@ -11,7 +11,7 @@ _logger = logging.getLogger(__name__)
 expires_in = 'restful.access_token_expires_in'
 
 
-class APIToken(http.Controller):
+class AccessToken(http.Controller):
     """."""
 
     def __init__(self):
@@ -48,11 +48,19 @@ class APIToken(http.Controller):
         _token = request.env['api.access_token']
         params = ['db', 'login', 'password']
         params = {key: post.get(key) for key in params if post.get(key)}
-        db, username, password = post.get(
+        db, username, password = params.get(
             'db'), post.get('login'), post.get('password')
-        if not all([db, username, password]):
-            # Empty 'db' or 'username' or 'password:
-            return invalid_response(400, 'missing error', 'either of the following are missing [db, username,password]')
+        _credentials_includes_in_body = all([db, username, password])
+        if not _credentials_includes_in_body:
+            # The request post body is empty the credetials maybe passed via the headers.
+            headers = request.httprequest.headers
+            db = headers.get('db')
+            username = headers.get('login')
+            password = headers.get('password')
+            _credentials_includes_in_headers = all([db, username, password])
+            if not _credentials_includes_in_headers:
+                # Empty 'db' or 'username' or 'password:
+                return invalid_response('missing error', 'either of the following are missing [db, username,password]', 403)
         # Login in odoo database:
         try:
             request.session.authenticate(db, username, password)
@@ -61,7 +69,7 @@ class APIToken(http.Controller):
             info = "The database name is not valid {}".format((e))
             error = 'invalid_database'
             _logger.error(info)
-            return invalid_response(400, error, info)
+            return invalid_response('wrong database name', error, info)
 
         uid = request.session.uid
         # odoo login failed:
