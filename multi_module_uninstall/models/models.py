@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from odoo import models, fields, api
+from odoo import api, fields, models
 
 
 class Module(models.Model):
-    _inherit = 'ir.module.module'
+    _inherit = "ir.module.module"
 
     @api.multi
     def module_multiple_uninstall(self):
@@ -12,6 +12,9 @@ class Module(models.Model):
             including the deletion of all database structures created by the module:
             tables, columns, constraints, etc.
         """
-        modules = self.browse(self.env.context.get('active_ids'))
-        [module.button_immediate_uninstall() for module in modules if module not in ['base', 'web']]
-
+        modules = self.browse(self.env.context.get("active_ids"))
+        [
+            module.button_immediate_uninstall()
+            for module in modules
+            if module not in ["base", "web"]
+        ]
